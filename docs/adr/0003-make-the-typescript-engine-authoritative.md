@@ -1,0 +1,3 @@
+# Make the TypeScript game engine authoritative
+
+The pure TypeScript engine is the authoritative implementation of 2048 rules. Python may provide an equivalent high-throughput environment for teacher search and dataset generation, but it must pass shared JSON conformance fixtures covering moves, merges, spawning, and fixed-seed trajectories. Both implementations use an explicitly implemented `xoshiro128**` 32-bit PRNG rather than language-native random functions; normal games receive a browser-generated seed, while tests and benchmarks use fixed seed lists. Final acceptance runs the exported ONNX model against the TypeScript engine so differences between Python simulation and the browser cannot produce misleading AI benchmark results.

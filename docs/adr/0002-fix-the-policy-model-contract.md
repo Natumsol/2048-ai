@@ -1,0 +1,3 @@
+# Fix the policy model contract across Python and the browser
+
+Represent each board as a `float32[1, 16, 4, 4]` one-hot tensor: channel 0 is empty, channels 1–14 represent `2¹` through `2¹⁴`, and channel 15 represents `2¹⁵` or greater. The model reads no score or history and emits `float32[1, 4]` direction logits ordered `[up, right, down, left]`; the browser masks illegal moves before selecting the highest remaining logit. This fixed contract avoids magnitude distortion from raw tile values and keeps PyTorch training, ONNX export, evaluation, and Web inference interoperable. A versioned metadata manifest records the contract version, names, shapes, and model hash; the browser rejects incompatible or corrupted models without disabling manual play.
