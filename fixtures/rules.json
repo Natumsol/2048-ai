@@ -1,0 +1,98 @@
+[
+  {
+    "name": "double-pair-left",
+    "board": [
+      [2, 2, 4, 4],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0]
+    ],
+    "score": 10,
+    "moveCount": 7,
+    "randomState": [1, 2, 3, 4],
+    "direction": "left",
+    "expected": {
+      "board": [
+        [4, 8, 2, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+      ],
+      "score": 22,
+      "moveCount": 8,
+      "randomState": [12295, 1029, 1029, 25165824]
+    }
+  },
+  {
+    "name": "complex-right",
+    "board": [
+      [2, 0, 2, 2],
+      [4, 4, 8, 0],
+      [0, 16, 0, 16],
+      [2, 2, 2, 2]
+    ],
+    "score": 10,
+    "moveCount": 7,
+    "randomState": [2, 3, 4, 5],
+    "direction": "right",
+    "expected": {
+      "board": [
+        [2, 0, 2, 4],
+        [0, 0, 8, 8],
+        [0, 0, 0, 32],
+        [0, 0, 4, 4]
+      ],
+      "score": 62,
+      "moveCount": 8,
+      "randomState": [12289, 1543, 3074, 25176064]
+    }
+  },
+  {
+    "name": "vertical-up",
+    "board": [
+      [2, 0, 0, 0],
+      [2, 0, 0, 0],
+      [4, 0, 0, 0],
+      [4, 0, 0, 0]
+    ],
+    "score": 10,
+    "moveCount": 7,
+    "randomState": [3, 4, 5, 6],
+    "direction": "up",
+    "expected": {
+      "board": [
+        [4, 2, 0, 0],
+        [8, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+      ],
+      "score": 22,
+      "moveCount": 8,
+      "randomState": [4099, 2053, 3079, 8392704]
+    }
+  },
+  {
+    "name": "shift-down",
+    "board": [
+      [2, 4, 8, 16],
+      [32, 64, 128, 256],
+      [512, 1024, 2, 4],
+      [8, 16, 32, 0]
+    ],
+    "score": 10,
+    "moveCount": 7,
+    "randomState": [4, 5, 6, 7],
+    "direction": "down",
+    "expected": {
+      "board": [
+        [2, 4, 8, 2],
+        [32, 64, 128, 16],
+        [512, 1024, 2, 256],
+        [8, 16, 32, 4]
+      ],
+      "score": 10,
+      "moveCount": 8,
+      "randomState": [4097, 2563, 1028, 8402944]
+    }
+  }
+]

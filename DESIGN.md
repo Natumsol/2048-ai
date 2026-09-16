@@ -10,19 +10,19 @@ The board is the visual anchor. Supporting controls stay cardless where possible
 
 All authored colors use OKLCH.
 
-| Token | Value | Role |
-| --- | --- | --- |
-| `canvas` | `oklch(0.955 0.024 80)` | warm paper page |
-| `surface` | `oklch(0.985 0.012 82)` | controls and score surfaces |
-| `surface-muted` | `oklch(0.91 0.025 72)` | subdued information |
-| `ink` | `oklch(0.28 0.035 50)` | primary text |
-| `ink-muted` | `oklch(0.51 0.035 64)` | explanatory text |
-| `board` | `oklch(0.62 0.05 60)` | game board body |
-| `slot` | `oklch(0.77 0.03 70)` | empty cells |
-| `amber` | `oklch(0.72 0.15 68)` | AI state and primary action |
-| `amber-deep` | `oklch(0.49 0.12 55)` | amber text and pressed state |
-| `clay` | `oklch(0.58 0.16 30)` | errors and destructive confirmation |
-| `olive` | `oklch(0.56 0.10 115)` | ready and healthy states |
+| Token           | Value                   | Role                                |
+| --------------- | ----------------------- | ----------------------------------- |
+| `canvas`        | `oklch(0.955 0.024 80)` | warm paper page                     |
+| `surface`       | `oklch(0.985 0.012 82)` | controls and score surfaces         |
+| `surface-muted` | `oklch(0.91 0.025 72)`  | subdued information                 |
+| `ink`           | `oklch(0.28 0.035 50)`  | primary text                        |
+| `ink-muted`     | `oklch(0.51 0.035 64)`  | explanatory text                    |
+| `board`         | `oklch(0.62 0.05 60)`   | game board body                     |
+| `slot`          | `oklch(0.77 0.03 70)`   | empty cells                         |
+| `amber`         | `oklch(0.72 0.15 68)`   | AI state and primary action         |
+| `amber-deep`    | `oklch(0.49 0.12 55)`   | amber text and pressed state        |
+| `clay`          | `oklch(0.58 0.16 30)`   | errors and destructive confirmation |
+| `olive`         | `oklch(0.56 0.10 115)`  | ready and healthy states            |
 
 Tile colors progress from warm ivory through sand, apricot, clay, amber, and deep brown. Text on a colored tile uses a darker or lighter shade of the same warm hue, never neutral gray.
 

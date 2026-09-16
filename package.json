@@ -1,0 +1,48 @@
+{
+  "name": "2048-ai",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "npm@10.9.2",
+  "engines": {
+    "node": ">=22 <23"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:python": "uv run --directory training pytest -q",
+    "benchmark:model": "tsx scripts/benchmark-model.ts",
+    "typecheck": "tsc -b --pretty false",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "npm run format:check && npm run lint && npm run typecheck && npm test",
+    "check:python": "uv run --directory training ruff format --check . && uv run --directory training ruff check . && uv run --directory training pyright && npm run test:python",
+    "check:all": "npm run check && npm run check:python && npm run build && npm run test:e2e",
+    "train:smoke": "uv run --directory training python -m scripts.pipeline --profile smoke --publish ../public/models",
+    "train:full": "uv run --directory training python -m scripts.pipeline --profile full --publish ../public/models"
+  },
+  "dependencies": {
+    "onnxruntime-web": "^1.30.0",
+    "pixi.js": "^8.20.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^22.20.3",
+    "@vitest/coverage-v8": "^5.0.1",
+    "eslint": "^10.10.0",
+    "eslint-config-prettier": "^10.1.8",
+    "fast-check": "^4.10.1",
+    "prettier": "^3.9.7",
+    "tsx": "^4.23.13",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.70.0",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.1"
+  }
+}

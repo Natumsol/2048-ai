@@ -1,0 +1,7 @@
+dist
+coverage
+node_modules
+training/.venv
+training/data
+training/artifacts
+public/models/*.onnx
