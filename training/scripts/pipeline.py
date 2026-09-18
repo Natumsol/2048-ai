@@ -5,7 +5,9 @@ import hashlib
 import json
 import os
 import shutil
+import statistics
 import subprocess
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import torch
@@ -53,6 +55,81 @@ def publish_candidate(model_path: Path, manifest_path: Path, publish_directory: 
     return publish_directory / model_name
 
 
+def benchmark_candidate(
+    model_path: Path, games: int, project_root: Path, workers: int = 1
+) -> dict[str, object]:
+    worker_count = min(max(1, workers), games)
+
+    def run_shard(seed: int, count: int) -> dict[str, object]:
+        completed = subprocess.run(
+            [
+                (project_root / "node_modules" / ".bin" / "tsx").as_posix(),
+                (project_root / "scripts" / "benchmark-model.ts").as_posix(),
+                "--model",
+                model_path.as_posix(),
+                "--games",
+                str(count),
+                "--seed",
+                str(seed),
+                "--details",
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+            cwd=project_root,
+        )
+        result = json.loads(completed.stdout)
+        if not isinstance(result, dict):
+            raise RuntimeError("model benchmark did not return a JSON object")
+        return result
+
+    def run_shard_task(shard: tuple[int, int]) -> dict[str, object]:
+        return run_shard(*shard)
+
+    latency_probe = run_shard(90_000, min(5, games))
+    quotient, remainder = divmod(games, worker_count)
+    shards = []
+    seed = 50_000
+    for index in range(worker_count):
+        count = quotient + int(index < remainder)
+        shards.append((seed, count))
+        seed += count
+    with ThreadPoolExecutor(max_workers=worker_count) as executor:
+        results = list(executor.map(run_shard_task, shards))
+
+    maximum_tiles: list[int] = []
+    scores: list[int] = []
+    move_counts: list[int] = []
+    for result in results:
+        details = result.get("details")
+        if not isinstance(details, dict):
+            raise RuntimeError("parallel benchmark shard has no details")
+        for name, destination in (
+            ("maximumTiles", maximum_tiles),
+            ("scores", scores),
+            ("moveCounts", move_counts),
+        ):
+            values = details.get(name)
+            if not isinstance(values, list) or not all(isinstance(value, int) for value in values):
+                raise RuntimeError(f"parallel benchmark details field {name} is invalid")
+            destination.extend(values)
+    reached = sum(tile >= 2048 for tile in maximum_tiles)
+    return {
+        "runner": "typescript-engine+onnxruntime-web-wasm-parallel+serial-latency",
+        "games": games,
+        "seedStart": 50_000,
+        "workers": worker_count,
+        "illegalMoves": sum(int(_numeric_metric(result, "illegalMoves")) for result in results),
+        "truncatedGames": sum(int(_numeric_metric(result, "truncatedGames")) for result in results),
+        "reached2048": reached,
+        "reached2048Rate": reached / games,
+        "medianMaximumTile": statistics.median(maximum_tiles),
+        "medianScore": statistics.median(scores),
+        "medianMoves": statistics.median(move_counts),
+        "decisionP95Ms": _numeric_metric(latency_probe, "decisionP95Ms"),
+    }
+
+
 def _main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--profile", choices=("smoke", "full"), default="smoke")
@@ -69,6 +146,8 @@ def _main() -> None:
             int(raw["teacherDepth"]),
             float(raw["teacherTemperature"]),
             range(40_000, 41_000),
+            int(raw.get("teacherWorkers", raw["dataWorkers"])),
+            artifact_directory / f"teacher-benchmark-{raw.get('teacherVersion', 'baseline')}",
         )
         teacher_passed = (
             _numeric_metric(teacher_benchmark, "reached2048Rate") >= 0.9
@@ -85,6 +164,7 @@ def _main() -> None:
             raw["teacherDepth"],
             raw["teacherTemperature"],
             raw["dataWorkers"],
+            raw.get("teacherVersion", "baseline"),
         ),
         data_directory,
     )
@@ -96,11 +176,13 @@ def _main() -> None:
             raw["learningRate"],
             raw["weightDecay"],
             raw["evaluationGames"],
+            model_channels=int(raw.get("modelChannels", 64)),
+            model_blocks=int(raw.get("modelBlocks", 4)),
         ),
         data_directory,
         artifact_directory,
     )
-    model = PolicyNetwork()
+    model = PolicyNetwork(int(raw.get("modelChannels", 64)), int(raw.get("modelBlocks", 4)))
     model.load_state_dict(torch.load(checkpoint, map_location="cpu", weights_only=True))
     candidate_directory = artifact_directory / "release-candidate"
     model_path, manifest_path = export_policy(
@@ -115,21 +197,12 @@ def _main() -> None:
         },
     )
     project_root = root.parent
-    completed = subprocess.run(
-        [
-            (project_root / "node_modules" / ".bin" / "tsx").as_posix(),
-            (project_root / "scripts" / "benchmark-model.ts").as_posix(),
-            "--model",
-            model_path.as_posix(),
-            "--games",
-            str(raw["benchmarkGames"]),
-        ],
-        check=True,
-        capture_output=True,
-        text=True,
-        cwd=project_root,
+    benchmark = benchmark_candidate(
+        model_path,
+        int(raw["benchmarkGames"]),
+        project_root,
+        int(raw.get("benchmarkWorkers", 1)),
     )
-    benchmark = json.loads(completed.stdout)
     quality_gate_passed = student_quality_gate(benchmark)
     benchmark["qualityGatePassed"] = quality_gate_passed
     manifest = json.loads(manifest_path.read_text())

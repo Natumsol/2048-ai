@@ -13,7 +13,7 @@ from numpy.typing import NDArray
 
 from data.dataset import boards_to_exponents, split_for_seed
 from environment.game import Direction, Game, legal_directions
-from teacher.expectimax import ExpectimaxTeacher
+from teacher.expectimax import HEURISTIC_VERSION, ExpectimaxTeacher, ensure_native_teacher
 
 
 @dataclass(frozen=True)
@@ -24,6 +24,7 @@ class GenerationConfig:
     teacher_depth: int
     teacher_temperature: float
     workers: int = 1
+    teacher_version: str = HEURISTIC_VERSION
 
 
 @dataclass(frozen=True)
@@ -35,6 +36,7 @@ class EpisodeData:
     seeds: NDArray[np.uint32]
     steps: NDArray[np.uint16]
     sources: NDArray[np.uint8]
+    priorities: NDArray[np.float32]
 
 
 def _episode_seed(config: GenerationConfig, episode: int) -> int:
@@ -79,10 +81,11 @@ def _generate_episode(task: tuple[GenerationConfig, int]) -> EpisodeData:
         seeds=np.full(count, seed, dtype=np.uint32),
         steps=np.arange(count, dtype=np.uint16),
         sources=np.full(count, source, dtype=np.uint8),
+        priorities=np.ones(count, dtype=np.float32),
     )
 
 
-def _save_episode(path: Path, episode: EpisodeData) -> None:
+def save_episode_shard(path: Path, episode: EpisodeData) -> None:
     temporary = path.with_suffix(".tmp.npz")
     np.savez_compressed(
         temporary,
@@ -92,11 +95,12 @@ def _save_episode(path: Path, episode: EpisodeData) -> None:
         seeds=episode.seeds,
         steps=episode.steps,
         sources=episode.sources,
+        priorities=episode.priorities,
     )
     temporary.replace(path)
 
 
-def _episode_count(path: Path) -> int:
+def episode_sample_count(path: Path) -> int:
     with np.load(path) as archive:
         return len(archive["boards"])
 
@@ -117,6 +121,7 @@ class _InlineExecutor:
 
 
 def _generate_resumable_shards(config: GenerationConfig, output_directory: Path) -> list[Path]:
+    ensure_native_teacher()
     shard_directory = output_directory / "shards"
     shard_directory.mkdir(parents=True, exist_ok=True)
     shards: list[Path] = []
@@ -127,7 +132,7 @@ def _generate_resumable_shards(config: GenerationConfig, output_directory: Path)
         if not path.exists():
             break
         shards.append(path)
-        generated += _episode_count(path)
+        generated += episode_sample_count(path)
         episode += 1
 
     workers = max(1, config.workers)
@@ -137,7 +142,7 @@ def _generate_resumable_shards(config: GenerationConfig, output_directory: Path)
             tasks = [(config, index) for index in range(episode, episode + workers)]
             for result in executor.map(_generate_episode, tasks):
                 path = shard_directory / f"episode-{result.episode:06d}.npz"
-                _save_episode(path, result)
+                save_episode_shard(path, result)
                 shards.append(path)
                 generated += len(result.boards)
                 episode += 1
@@ -147,7 +152,7 @@ def _generate_resumable_shards(config: GenerationConfig, output_directory: Path)
     return shards
 
 
-def _merge_shards(
+def merge_episode_shards(
     shards: list[Path], sample_limit: int, output_directory: Path
 ) -> tuple[dict[str, int], dict[str, str], int, int]:
     selected: list[tuple[Path, int, str]] = []
@@ -175,13 +180,17 @@ def _merge_shards(
             "seeds": np.empty(count, dtype=np.uint32),
             "steps": np.empty(count, dtype=np.uint16),
             "sources": np.empty(count, dtype=np.uint8),
+            "priorities": np.empty(count, dtype=np.float32),
         }
     offsets = {name: 0 for name in counts}
     for path, take, split in selected:
         offset = offsets[split]
         with np.load(path) as archive:
             for name, destination in arrays[split].items():
-                destination[offset : offset + take] = archive[name][:take]
+                if name == "priorities" and name not in archive:
+                    destination[offset : offset + take] = 1.0
+                else:
+                    destination[offset : offset + take] = archive[name][:take]
         offsets[split] += take
 
     hashes: dict[str, str] = {}
@@ -205,7 +214,9 @@ def generate_dataset(config: GenerationConfig, output_directory: Path) -> dict[s
         raise RuntimeError("existing resumable shards use a different generation config")
     config_path.write_text(json.dumps(serialized_config, indent=2) + "\n")
     shards = _generate_resumable_shards(config, output_directory)
-    counts, hashes, normal, perturbed = _merge_shards(shards, config.samples, output_directory)
+    counts, hashes, normal, perturbed = merge_episode_shards(
+        shards, config.samples, output_directory
+    )
     manifest: dict[str, object] = {
         "version": 1,
         "profile": config.profile,
@@ -219,6 +230,7 @@ def generate_dataset(config: GenerationConfig, output_directory: Path) -> dict[s
             "kind": "deterministic-expectimax",
             "depth": config.teacher_depth,
             "temperature": config.teacher_temperature,
+            "heuristicVersion": config.teacher_version,
         },
         "split": "seed modulo 10 bucketed 80/10/10 by complete episode",
         "counts": counts,
@@ -243,6 +255,7 @@ def _main() -> None:
         teacher_depth=raw["teacherDepth"],
         teacher_temperature=raw["teacherTemperature"],
         workers=raw["dataWorkers"],
+        teacher_version=raw.get("teacherVersion", HEURISTIC_VERSION),
     )
     print(json.dumps(generate_dataset(config, arguments.output), indent=2))
 

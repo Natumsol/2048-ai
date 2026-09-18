@@ -3,7 +3,7 @@ from __future__ import annotations
 import numpy as np
 import torch
 
-from model.policy import PolicyNetwork, encode_boards
+from model.policy import PolicyNetwork, SymmetryEnsemblePolicy, encode_boards
 
 
 def test_encode_boards_uses_fixed_one_hot_contract() -> None:
@@ -31,6 +31,14 @@ def test_encode_boards_uses_fixed_one_hot_contract() -> None:
 
 def test_policy_network_emits_four_finite_logits() -> None:
     model = PolicyNetwork()
+    logits = model(torch.zeros((3, 16, 4, 4), dtype=torch.float32))
+
+    assert logits.shape == (3, 4)
+    assert torch.isfinite(logits).all()
+
+
+def test_symmetry_ensemble_emits_four_finite_logits() -> None:
+    model = SymmetryEnsemblePolicy(PolicyNetwork())
     logits = model(torch.zeros((3, 16, 4, 4), dtype=torch.float32))
 
     assert logits.shape == (3, 4)

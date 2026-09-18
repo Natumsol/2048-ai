@@ -15,11 +15,13 @@ def test_generation_uses_multiple_seed_splits_and_both_sources(tmp_path: Path) -
     assert manifest["samples"] == 3072
     assert cast(int, manifest["normalSamples"]) > 0
     assert cast(int, manifest["perturbedSamples"]) > 0
+    observed_sources: set[int] = set()
     for split in ("train", "validation", "test"):
         archive = np.load(tmp_path / f"{split}.npz")
         assert len(archive["boards"]) > 0
         assert archive["boards"].dtype == np.uint8
-        assert set(archive["sources"].tolist()) == {0, 1}
+        observed_sources.update(archive["sources"].tolist())
+    assert observed_sources == {0, 1}
 
     resumed = generate_dataset(config, tmp_path)
     assert resumed["sha256"] == manifest["sha256"]

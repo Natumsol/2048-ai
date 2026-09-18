@@ -24,7 +24,10 @@
     "check:python": "uv run --directory training ruff format --check . && uv run --directory training ruff check . && uv run --directory training pyright && npm run test:python",
     "check:all": "npm run check && npm run check:python && npm run build && npm run test:e2e",
     "train:smoke": "uv run --directory training python -m scripts.pipeline --profile smoke --publish ../public/models",
-    "train:full": "uv run --directory training python -m scripts.pipeline --profile full --publish ../public/models"
+    "train:full": "uv run --directory training python -m scripts.pipeline --profile full --publish ../public/models",
+    "train:dagger": "uv run --directory training python -m scripts.dagger_pipeline --profile full --publish ../public/models",
+    "train:polish": "uv run --directory training python -m scripts.polish --profile full --publish ../public/models",
+    "train:ensemble": "uv run --directory training python -m scripts.ensemble --profile full --publish ../public/models"
   },
   "dependencies": {
     "onnxruntime-web": "^1.30.0",

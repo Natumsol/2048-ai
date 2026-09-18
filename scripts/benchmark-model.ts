@@ -28,6 +28,7 @@ if (!modelPath) {
 }
 const games = Number.parseInt(argument('--games', '100'), 10);
 const seedStart = Number.parseInt(argument('--seed', '50000'), 10);
+const includeDetails = process.argv.includes('--details');
 if (!Number.isSafeInteger(games) || games <= 0) throw new Error('--games 必须是正整数');
 
 ort.env.wasm.numThreads = 1;
@@ -98,6 +99,7 @@ process.stdout.write(
       medianScore: median(scores),
       medianMoves: median(moveCounts),
       decisionP95Ms: measuredDurations[p95Index] ?? 0,
+      ...(includeDetails ? { details: { maximumTiles, scores, moveCounts } } : {}),
     },
     undefined,
     2,

@@ -56,3 +56,50 @@ class PolicyNetwork(nn.Module):
 
     def forward(self, inputs: Tensor) -> Tensor:
         return self.head(self.blocks(self.stem(inputs)))
+
+
+class SymmetryEnsemblePolicy(nn.Module):
+    """Average policy logits over the eight symmetries of the square board."""
+
+    def __init__(self, policy: nn.Module) -> None:
+        super().__init__()
+        self.policy = policy
+        self.register_buffer(
+            "direction_permutations",
+            torch.tensor(
+                (
+                    (0, 1, 2, 3),
+                    (3, 0, 1, 2),
+                    (2, 3, 0, 1),
+                    (1, 2, 3, 0),
+                    (0, 3, 2, 1),
+                    (1, 0, 3, 2),
+                    (2, 1, 0, 3),
+                    (3, 2, 1, 0),
+                ),
+                dtype=torch.int64,
+            ),
+        )
+
+    def forward(self, inputs: Tensor) -> Tensor:
+        transformed_boards: list[Tensor] = []
+        for transform in range(8):
+            turns = transform % 4
+            if turns == 0:
+                transformed = inputs
+            elif turns == 1:
+                transformed = torch.flip(inputs.transpose(2, 3), dims=(2,))
+            elif turns == 2:
+                transformed = torch.flip(inputs, dims=(2, 3))
+            else:
+                transformed = torch.flip(inputs.transpose(2, 3), dims=(3,))
+            if transform >= 4:
+                transformed = torch.flip(transformed, dims=(3,))
+            transformed_boards.append(transformed)
+
+        transformed_logits = self.policy(torch.cat(transformed_boards)).chunk(8)
+        canonical_logits: list[Tensor] = []
+        for transform, logits in enumerate(transformed_logits):
+            permutation = self.direction_permutations[transform]
+            canonical_logits.append(logits[:, permutation])
+        return torch.stack(canonical_logits).mean(dim=0)
