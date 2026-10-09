@@ -5,6 +5,7 @@ import { BrowserGameStorage } from './game/browser-storage';
 import { GameController, type AutoPlaySpeed } from './game/game-controller';
 import type { Direction, GameEvent, MoveTransition } from './game/game-session';
 import { BoardRenderer, boardAsText } from './render/board-renderer';
+import { bindStaticTranslations, languageKey, readLanguage, translate } from './i18n';
 
 const root = document.querySelector<HTMLDivElement>('#app');
 if (!root) throw new Error('缺少应用挂载节点');
@@ -15,6 +16,10 @@ root.innerHTML = `
     <div class="${styles.shell}">
       <header class="${styles.identity}">
         <p class="${styles.eyebrow}">本地策略模型</p>
+        <div class="${styles.languageControl}" role="group" aria-label="Language / 语言">
+          <button type="button" data-language="en">English</button>
+          <button type="button" data-language="zh-CN">中文</button>
+        </div>
         <h1 class="${styles.title}">2048<small>AI PLAY</small></h1>
         <p class="${styles.tagline}">每一步都在你的浏览器里决定。你来走，或把当前局面交给神经网络。</p>
         <div class="${styles.scores}" aria-label="对局分数">
@@ -74,6 +79,11 @@ root.innerHTML = `
   </dialog>
 `;
 
+let language = readLanguage();
+const t = (text: string): string => translate(text, language);
+const translateStatic = bindStaticTranslations(root);
+const languageButtons = [...root.querySelectorAll<HTMLButtonElement>('[data-language]')];
+
 const required = <ElementType extends Element>(selector: string): ElementType => {
   const element = document.querySelector<ElementType>(selector);
   if (!element) throw new Error(`缺少界面元素：${selector}`);
@@ -132,10 +142,18 @@ const systemReducedMotion = matchMedia('(prefers-reduced-motion: reduce)').match
 reduceMotionInput.checked = localStorage.getItem(reduceMotionKey) === 'true' || systemReducedMotion;
 
 const updateDom = (): void => {
+  translateStatic(language);
+  document.documentElement.lang = language;
+  languageButtons.forEach((button) => {
+    button.setAttribute('aria-pressed', String(button.dataset.language === language));
+  });
   const snapshot = controller.snapshot();
   score.textContent = String(snapshot.game.score);
   bestScore.textContent = String(snapshot.bestScore);
-  boardDescription.textContent = `棋盘：${boardAsText(snapshot.game.board)}。分数 ${snapshot.game.score}。`;
+  boardDescription.textContent =
+    language === 'en'
+      ? `Board: ${boardAsText(snapshot.game.board)}. Score ${snapshot.game.score}.`
+      : `棋盘：${boardAsText(snapshot.game.board)}。分数 ${snapshot.game.score}。`;
   boardShell.dataset.ai = snapshot.aiStatus === 'running' ? 'running' : 'manual';
   directionSignal.textContent = snapshot.lastDirection
     ? directionGlyph[snapshot.lastDirection]
@@ -145,7 +163,10 @@ const updateDom = (): void => {
   );
 
   gameOver.dataset.visible = String(snapshot.game.phase === 'over');
-  gameOverCopy.textContent = `分数 ${snapshot.game.score}，最大方块 ${Math.max(...snapshot.game.board.flat())}，共 ${snapshot.game.moveCount} 步。`;
+  gameOverCopy.textContent =
+    language === 'en'
+      ? `Score ${snapshot.game.score}, highest tile ${Math.max(...snapshot.game.board.flat())}, ${snapshot.game.moveCount} moves.`
+      : `分数 ${snapshot.game.score}，最大方块 ${Math.max(...snapshot.game.board.flat())}，共 ${snapshot.game.moveCount} 步。`;
 
   speedButtons.forEach((button) => {
     button.setAttribute('aria-pressed', String(button.dataset.speed === snapshot.speed));
@@ -153,16 +174,16 @@ const updateDom = (): void => {
 
   if (modelLoading) {
     statusDot.dataset.status = 'loading';
-    statusCopy.textContent = '正在加载本地策略模型';
-    backendCopy.textContent = '人工模式可用';
+    statusCopy.textContent = t('正在加载本地策略模型');
+    backendCopy.textContent = t('人工模式可用');
     retryModel.hidden = true;
     autoPlay.disabled = true;
     return;
   }
   if (modelError) {
     statusDot.dataset.status = 'error';
-    statusCopy.textContent = modelError;
-    backendCopy.textContent = '人工模式可用';
+    statusCopy.textContent = t('无法加载本地策略模型');
+    backendCopy.textContent = t('人工模式可用');
     retryModel.hidden = false;
     autoPlay.disabled = true;
     return;
@@ -174,15 +195,29 @@ const updateDom = (): void => {
   statusDot.dataset.status = snapshot.aiStatus;
   statusCopy.textContent =
     snapshot.aiStatus === 'running'
-      ? `AI 正在游玩${snapshot.lastDirection ? `，最近向${directionName[snapshot.lastDirection]}` : ''}`
+      ? language === 'en'
+        ? `AI playing${snapshot.lastDirection ? ` · last move: ${snapshot.lastDirection}` : ''}`
+        : `AI 正在游玩${snapshot.lastDirection ? `，最近向${directionName[snapshot.lastDirection]}` : ''}`
       : snapshot.aiStatus === 'error'
-        ? (snapshot.error ?? '策略模型已暂停')
+        ? t('模型推理失败，可以人工操作')
         : snapshot.aiStatus === 'paused'
-          ? 'AI 已暂停，可以人工操作'
-          : '策略模型已就绪';
-  backendCopy.textContent = snapshot.backend ?? '等待首次推理';
-  autoPlay.textContent = snapshot.control === 'ai' ? '暂停自动游玩' : '开始自动游玩';
+          ? t('AI 已暂停，可以人工操作')
+          : t('策略模型已就绪');
+  backendCopy.textContent = snapshot.backend ?? t('等待首次推理');
+  autoPlay.textContent = t(snapshot.control === 'ai' ? '暂停自动游玩' : '开始自动游玩');
 };
+
+languageButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    language = button.dataset.language === 'zh-CN' ? 'zh-CN' : 'en';
+    try {
+      localStorage.setItem(languageKey, language);
+    } catch {
+      // Language switching works even when storage is unavailable.
+    }
+    updateDom();
+  });
+});
 
 const showWin = (): void => {
   winToast.dataset.visible = 'true';

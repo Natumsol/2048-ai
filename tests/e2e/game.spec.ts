@@ -2,6 +2,9 @@ import { expect, test } from '@playwright/test';
 
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
+    if (!localStorage.getItem('2048-ai:language')) {
+      localStorage.setItem('2048-ai:language', 'zh-CN');
+    }
     if (sessionStorage.getItem('e2e-seeded') === 'true') return;
     sessionStorage.setItem('e2e-seeded', 'true');
     localStorage.setItem(
@@ -27,6 +30,22 @@ test.beforeEach(async ({ page }) => {
   });
   await page.goto('/');
   await expect(page.getByText('策略模型已就绪')).toBeVisible({ timeout: 20_000 });
+});
+
+test('switches languages without changing the game and remembers the selection', async ({
+  page,
+}) => {
+  const stored = await page.evaluate(() => localStorage.getItem('2048-ai:session:v1'));
+  await page.getByRole('button', { name: 'English', exact: true }).click();
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  await expect(page.getByRole('button', { name: 'Start AI autoplay' })).toBeVisible();
+  await expect(page.getByText('Policy model ready', { exact: true })).toBeVisible();
+  expect(await page.evaluate(() => localStorage.getItem('2048-ai:session:v1'))).toBe(stored);
+  await page.reload();
+  await expect(page.getByText('Policy model ready', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: '中文', exact: true }).click();
+  await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN');
+  await expect(page.getByRole('button', { name: '开始自动游玩' })).toBeVisible();
 });
 
 test('supports WASD and restores the exact persisted session after reload', async ({ page }) => {

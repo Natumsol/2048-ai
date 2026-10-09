@@ -1,39 +1,80 @@
 # 2048 AI
 
-一个完全在浏览器本地运行的 2048：PixiJS 负责棋盘与动画，ONNX Runtime Web 执行由 PyTorch 训练的策略网络。人工操作、自动游玩、当前对局存档和最高分都不依赖后端，也不上传数据。
+English | [简体中文](README.zh-CN.md)
 
-## 本地运行
+A browser-only 2048 game with a PixiJS board and a neural policy trained in PyTorch. Play manually or let the AI take over the current board. ONNX Runtime Web runs inference locally; gameplay needs no backend and uploads no game data.
 
-需要 Node.js 22、npm 10、Python 3.12 和 [uv](https://docs.astral.sh/uv/)。
+## Demo
+
+![Desktop gameplay](docs/images/2048-desktop-en.png)
+
+<details>
+<summary>Mobile view</summary>
+
+<img src="docs/images/2048-mobile-en.png" alt="2048 AI on a mobile viewport" width="390" />
+
+</details>
+
+Screenshots show the English interface after AI autoplay. Use the English / 中文 buttons to switch languages; your selection is remembered locally. English is the default.
+
+## Features
+
+- Arrow keys, WASD, and touch swipes.
+- AI autoplay from the current board, with pause and three speed settings.
+- Local session recovery and best-score persistence.
+- WebGPU inference with a single-threaded WASM fallback.
+- Responsive layout, reduced-motion support, and model SHA-256 validation.
+
+## Quick start
+
+Install Node.js 22 and npm 10, then run:
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
-方向键、WASD 和棋盘滑动都可以移动。模型会在页面可玩后异步加载；WebGPU 不可用时自动回退到单线程 WASM。
+Open the server URL, usually `http://localhost:5173/`. A trained model is included: Python and retraining are not required to play. The model loads asynchronously while manual play is available.
 
-## 验证
+Use arrow keys, WASD, or swipes. Select **Start AI autoplay** to start the AI and **Pause AI autoplay** to resume manual control. Reaching 2048 does not end the game.
 
 ```bash
-npm run check
-npm run check:python
-npm run build
-npm run test:e2e
+npm run build    # Production build
+npm run preview  # Local production preview
 ```
 
-`npm run check:all` 会依次执行以上全部检查。规则测试包含固定种子重放、合并语义、属性测试、控制器状态和模型异常降级；Python 测试覆盖教师、数据、网络与 ONNX 导出契约。
+## Published model results
 
-## 训练与发布模型
+The bundled model completed 1,000 fixed-seed games using the TypeScript engine and ONNX Runtime Web WASM.
 
-快速端到端验证：
+| Metric                          | Result              |
+| ------------------------------- | ------------------- |
+| Games reaching 2048             | 737 / 1,000 (73.7%) |
+| Median maximum tile             | 2048                |
+| Median score                    | 32,438              |
+| Median moves                    | 1,682               |
+| Decision latency P95            | 19.45 ms            |
+| Illegal moves / truncated games | 0 / 0               |
+| Model size                      | About 4.6 MiB       |
+
+Gameplay uses seeds 50,000–50,999. Latency is measured separately over five single-process games to avoid parallel CPU contention. Timing depends on the machine. See the [model manifest](public/models/policy.manifest.json) for recorded metrics and the model hash.
+
+```bash
+npm run benchmark:model -- --games 100
+```
+
+## Training and publication
+
+Training requires Python 3.12 and [uv](https://docs.astral.sh/uv/). Full data generation also needs a C++ compiler for the native Expectimax teacher; on macOS, install Xcode Command Line Tools.
 
 ```bash
 uv sync --directory training --all-groups
 npm run train:smoke
 ```
 
-正式预算训练：
+The smoke command publishes a test model and can replace the bundled model manifest. It bypasses the full quality gate. Restore the tracked manifest after experimenting to use the bundled model again.
+
+Run the full sequence in order:
 
 ```bash
 npm run train:full
@@ -42,14 +83,43 @@ npm run train:polish
 npm run train:ensemble
 ```
 
-流水线依次生成 Expectimax 软目标、按完整种子拆分数据、训练残差 CNN，再通过 DAgger 收集学生实际访问的困难局面并低学习率微调。发布模型在 ONNX 图内集成棋盘的八种旋转与镜像视角，输入输出契约仍保持固定形状。浏览器在创建会话前会验证清单契约和模型 SHA-256。
+Expectimax generates soft targets, with dataset splits grouped by complete game seed. A residual CNN learns with eight-way board augmentation. DAgger labels states visited by the student and retrains with weighted hard-state replay. Low-learning-rate polishing refines the checkpoint, then an ONNX ensemble averages eight rotated and reflected views.
 
-正式质量基准直接使用 TypeScript 权威规则引擎和 ONNX Runtime Web WASM：
+The [full configuration](training/configs/full.json) uses 96 channels, six residual blocks, and two DAgger rounds. Datasets and intermediate artifacts are stored in `training/datasets/` and `training/artifacts/`, both ignored by Git.
+
+Full stages retain candidates even when publication fails. A failed quality gate exits with an error; later stages can still use the saved checkpoints. Publication requires zero illegal moves, zero truncated games, at least 50% reaching 2048, median maximum tile at least 1024, and single-process decision P95 at most 50 ms. Passing candidates are published atomically with content-hashed filenames.
+
+## Model contract and project structure
+
+Input: one-hot `float32[1,16,4,4]` board. Output: `float32[1,4]` logits ordered `[up, right, down, left]`. The browser masks illegal moves and selects the highest remaining logit. Model errors pause autoplay while manual play remains available.
+
+| Directory        | Responsibility                                              |
+| ---------------- | ----------------------------------------------------------- |
+| `src/game/`      | Authoritative rules, deterministic randomness, game control |
+| `src/ai/`        | Board encoding, legal-move selection, browser inference     |
+| `src/render/`    | PixiJS rendering and animation                              |
+| `training/`      | Teacher, datasets, training, ONNX export                    |
+| `public/models/` | Published model and manifest                                |
+| `tests/e2e/`     | Desktop and mobile browser tests                            |
+| `docs/adr/`      | Architecture decisions                                      |
+
+## Verification
+
+Install Python development dependencies and the test browser before running the full suite:
 
 ```bash
-npm run benchmark:model -- --games 100
+uv sync --directory training --all-groups
+npx playwright install chromium
+npm run check:all
 ```
 
-`full` 流水线先验证教师门槛，再在候选目录中训练与导出；只有 TypeScript + ONNX Runtime Web 的 1,000 局基准达到「无非法移动、至少 50% 到达 2048、中位最大方块至少 1024、单路决策 P95 不超过 50ms」才会原子发布内容哈希命名的模型。当前正式模型达到 2048 的比例为 73.7%，中位最大方块为 2048，决策 P95 为 19.45ms，且没有非法动作或截断局。
+Individual commands:
 
-模型输入固定为 `float32[1,16,4,4]`，输出为 `[上, 右, 下, 左]` 顺序的 `float32[1,4]` logits。浏览器始终先屏蔽非法方向，再选择最高 logit；模型异常会暂停 AI，但不会影响人工对局。
+```bash
+npm run check         # Formatting, lint, TypeScript, frontend tests
+npm run check:python  # Python formatting, lint, types, tests
+npm run build         # Production build
+npm run test:e2e      # Desktop and mobile browser tests
+```
+
+Tests cover deterministic replay, merge rules, shared Python/TypeScript fixtures, persistence, AI handoff, model failures, teacher labels, and ONNX export parity.

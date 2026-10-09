@@ -73,6 +73,29 @@
   align-items: center;
 }
 
+.languageControl {
+  display: flex;
+  gap: 6px;
+  margin: 10px 0;
+}
+
+.languageControl button {
+  padding: 5px 10px;
+  border: 1px solid #d9cbb7;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.languageControl button[aria-pressed='true'] {
+  background: #fffaf0;
+  color: #995000;
+  border-color: #e69321;
+}
+
 .identity {
   align-self: stretch;
   display: flex;
@@ -568,6 +591,12 @@
     grid-template-columns: 1fr auto;
     align-items: end;
     gap: 8px 18px;
+  }
+
+  .languageControl {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    margin: 0;
   }
 
   .eyebrow,
