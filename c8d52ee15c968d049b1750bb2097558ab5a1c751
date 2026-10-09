@@ -1,0 +1,450 @@
+src/game/prng.test.ts
+  59556957e4d101cb 1-12
+training/tests/test_export.py
+  59556957e4d101cb 1-38
+src/game/game-controller.ts
+  59556957e4d101cb 1-146,148-195
+src/game/game-controller.test.ts
+  59556957e4d101cb 1-164,167-220
+training/tests/test_game.py
+  59556957e4d101cb 1-25
+playwright.config.ts
+  59556957e4d101cb 1-18
+training/scripts/train.py
+  59556957e4d101cb 1-222
+vitest.config.ts
+  59556957e4d101cb 1-11
+vite.config.ts
+  59556957e4d101cb 1-7
+training/data/dataset.py
+  59556957e4d101cb 1-62
+training/scripts/benchmark.py
+  59556957e4d101cb 1-117
+eslint.config.js
+  59556957e4d101cb 1-35
+src/game/rules-contract.test.ts
+  59556957e4d101cb 1-47
+.prettierrc.json
+  59556957e4d101cb 1-5
+DESIGN.md
+  59556957e4d101cb 13-25
+package.json
+  59556957e4d101cb 1-48
+fixtures/prng.json
+  59556957e4d101cb 1-26
+.gitignore
+  59556957e4d101cb 6-7,43,52
+src/game/game-session.test.ts
+  59556957e4d101cb 1-103
+src/ai/policy-model.ts
+  59556957e4d101cb 1-74
+training/.python-version
+  59556957e4d101cb 1
+training/environment/game.py
+  59556957e4d101cb 1-162
+training/model/exporter.py
+  59556957e4d101cb 1-62
+training/tests/test_pipeline.py
+  59556957e4d101cb 1-46
+training/environment/__init__.py
+  59556957e4d101cb 1-3
+training/scripts/__init__.py
+  59556957e4d101cb 1
+index.html
+  59556957e4d101cb 1-14
+tsconfig.node.json
+  59556957e4d101cb 1-13
+scripts/benchmark-model.ts
+  59556957e4d101cb 1-105
+training/pyproject.toml
+  59556957e4d101cb 1-39
+src/ai/policy-model.test.ts
+  59556957e4d101cb 1-31
+src/main.ts
+  59556957e4d101cb 1-378
+fixtures/trajectory.json
+  59556957e4d101cb 1-96
+training/tests/test_generate_data.py
+  59556957e4d101cb 1-26
+training/tests/test_model.py
+  59556957e4d101cb 1-37
+tsconfig.app.json
+  59556957e4d101cb 1-30
+.node-version
+  59556957e4d101cb 1
+src/game/prng.ts
+  59556957e4d101cb 1-46
+training/model/__init__.py
+  59556957e4d101cb 1-3
+src/render/board-renderer.ts
+  59556957e4d101cb 1-182
+tsconfig.json
+  59556957e4d101cb 1-4
+training/tests/test_rules_contract.py
+  59556957e4d101cb 1-39
+training/tests/test_teacher.py
+  59556957e4d101cb 1-23
+training/scripts/generate_data.py
+  59556957e4d101cb 1-251
+tests/e2e/game.spec.ts
+  59556957e4d101cb 1-125
+README.md
+  59556957e4d101cb 1-52
+training/configs/smoke.json
+  59556957e4d101cb 1-14
+.prettierignore
+  59556957e4d101cb 1-7
+src/game/browser-storage.ts
+  59556957e4d101cb 1-67
+training/teacher/expectimax.py
+  59556957e4d101cb 1-115
+training/tests/test_prng_contract.py
+  59556957e4d101cb 1-15
+src/ai/onnx-web-backend.ts
+  59556957e4d101cb 1-116
+public/models/policy.manifest.json
+  59556957e4d101cb 1-161
+training/tests/test_dataset.py
+  59556957e4d101cb 1-49
+src/game/browser-storage.test.ts
+  59556957e4d101cb 1-79
+training/data/__init__.py
+  59556957e4d101cb 1-8
+fixtures/rules.json
+  59556957e4d101cb 1-98
+training/configs/full.json
+  59556957e4d101cb 1-14
+training/scripts/pipeline.py
+  59556957e4d101cb 1-147
+training/teacher/__init__.py
+  59556957e4d101cb 1-3
+src/game/game-session.ts
+  59556957e4d101cb 1-227
+src/ai/model-artifact.test.ts
+  59556957e4d101cb 1-52
+training/scripts/export_model.py
+  59556957e4d101cb 1-29
+src/app.module.css
+  59556957e4d101cb 1-670
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8-ntes.9",
+  "base_commit_sha": "244fa871444667380b9388a3b2225f55840d830d",
+  "prompts": {
+    "59556957e4d101cb": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0aa3a-84c6-7c51-9fb9-92d5d9c75463",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "刘甲（彧瑾）",
+      "messages": [],
+      "total_additions": 8996,
+      "total_deletions": 627,
+      "accepted_lines": 5063,
+      "overriden_lines": 0,
+      "per_file_stats": {
+        "training/tests/test_prng_contract.py": {
+          "additions": 15,
+          "accepted_lines": 15
+        },
+        "training/.python-version": {
+          "accepted_lines": 1
+        },
+        "playwright.config.ts": {
+          "additions": 18,
+          "accepted_lines": 18
+        },
+        "src/game/browser-storage.ts": {
+          "additions": 43,
+          "deletions": 31,
+          "accepted_lines": 81
+        },
+        "training/environment/__init__.py": {
+          "accepted_lines": 3
+        },
+        "training/data/dataset.py": {
+          "additions": 65,
+          "deletions": 3,
+          "accepted_lines": 62
+        },
+        "test-results/.last-run.json": {
+          "additions": 4,
+          "accepted_lines": 8
+        },
+        "public/models/policy.onnx": {
+          "additions": 5868,
+          "accepted_lines": 5868
+        },
+        "training/configs/full.json": {
+          "additions": 18,
+          "deletions": 4,
+          "accepted_lines": 15
+        },
+        ".prettierrc.json": {
+          "additions": 5,
+          "accepted_lines": 5
+        },
+        "training/pyproject.toml": {
+          "additions": 4,
+          "accepted_lines": 39
+        },
+        "training/scripts/__init__.py": {
+          "additions": 1,
+          "accepted_lines": 1
+        },
+        "README.md": {
+          "additions": 55,
+          "deletions": 3,
+          "accepted_lines": 54
+        },
+        "training/tests/test_dataset.py": {
+          "additions": 51,
+          "deletions": 2,
+          "accepted_lines": 49
+        },
+        ".prettierignore": {
+          "additions": 7,
+          "accepted_lines": 7
+        },
+        "src/ai/model-artifact.test.ts": {
+          "additions": 52,
+          "accepted_lines": 52
+        },
+        "training/tests/test_pipeline.py": {
+          "additions": 46,
+          "accepted_lines": 46
+        },
+        "training/tests/test_model.py": {
+          "additions": 38,
+          "deletions": 1,
+          "accepted_lines": 37
+        },
+        "fixtures/rules.json": {
+          "additions": 106,
+          "deletions": 8,
+          "accepted_lines": 98
+        },
+        "training/tests/test_generate_data.py": {
+          "additions": 35,
+          "deletions": 9,
+          "accepted_lines": 28
+        },
+        "src/game/game-session.ts": {
+          "additions": 8,
+          "deletions": 6,
+          "accepted_lines": 227
+        },
+        "training/scripts/export_model.py": {
+          "additions": 29,
+          "accepted_lines": 29
+        },
+        "training/scripts/train.py": {
+          "additions": 232,
+          "deletions": 10,
+          "accepted_lines": 226
+        },
+        "src/main.ts": {
+          "additions": 28,
+          "deletions": 5,
+          "accepted_lines": 381
+        },
+        "training/configs/smoke.json": {
+          "additions": 21,
+          "deletions": 7,
+          "accepted_lines": 15
+        },
+        "src/ai/onnx-web-backend.ts": {
+          "additions": 42,
+          "deletions": 9,
+          "accepted_lines": 125
+        },
+        "eslint.config.js": {
+          "additions": 37,
+          "deletions": 2,
+          "accepted_lines": 35
+        },
+        "src/game/prng.test.ts": {
+          "additions": 12,
+          "accepted_lines": 12
+        },
+        "tsconfig.node.json": {
+          "additions": 22,
+          "deletions": 9,
+          "accepted_lines": 14
+        },
+        "src/game/prng.ts": {
+          "accepted_lines": 46
+        },
+        "src/game/game-session.test.ts": {
+          "additions": 57,
+          "deletions": 4,
+          "accepted_lines": 103
+        },
+        "training/model/__init__.py": {
+          "additions": 3,
+          "accepted_lines": 3
+        },
+        "src/game/game-controller.test.ts": {
+          "additions": 94,
+          "deletions": 4,
+          "accepted_lines": 220
+        },
+        "package.json": {
+          "additions": 49,
+          "deletions": 1,
+          "accepted_lines": 48
+        },
+        "training/tests/test_game.py": {
+          "accepted_lines": 25
+        },
+        "scripts/benchmark-model.ts": {
+          "additions": 110,
+          "deletions": 5,
+          "accepted_lines": 105
+        },
+        "training/scripts/pipeline.py": {
+          "additions": 174,
+          "deletions": 27,
+          "accepted_lines": 151
+        },
+        "fixtures/prng.json": {
+          "additions": 30,
+          "deletions": 4,
+          "accepted_lines": 26
+        },
+        "training/environment/game.py": {
+          "additions": 9,
+          "deletions": 6,
+          "accepted_lines": 162
+        },
+        "training/tests/test_teacher.py": {
+          "accepted_lines": 23
+        },
+        "training/tests/test_rules_contract.py": {
+          "additions": 42,
+          "deletions": 3,
+          "accepted_lines": 39
+        },
+        ".gitignore": {
+          "additions": 4,
+          "deletions": 2,
+          "accepted_lines": 4
+        },
+        "tsconfig.app.json": {
+          "additions": 32,
+          "deletions": 2,
+          "accepted_lines": 32
+        },
+        "src/game/game-controller.ts": {
+          "additions": 45,
+          "deletions": 13,
+          "accepted_lines": 201
+        },
+        "src/app.module.css": {
+          "additions": 38,
+          "deletions": 20,
+          "accepted_lines": 670
+        },
+        "src/game/browser-storage.test.ts": {
+          "additions": 102,
+          "deletions": 23,
+          "accepted_lines": 79
+        },
+        "fixtures/trajectory.json": {
+          "additions": 105,
+          "deletions": 9,
+          "accepted_lines": 96
+        },
+        "training/teacher/expectimax.py": {
+          "additions": 39,
+          "deletions": 46,
+          "accepted_lines": 115
+        },
+        "training/scripts/benchmark.py": {
+          "additions": 141,
+          "deletions": 24,
+          "accepted_lines": 129
+        },
+        "src/render/board-renderer.ts": {
+          "additions": 9,
+          "deletions": 3,
+          "accepted_lines": 182
+        },
+        "training/scripts/generate_data.py": {
+          "additions": 437,
+          "deletions": 186,
+          "accepted_lines": 402
+        },
+        "tests/e2e/game.spec.ts": {
+          "additions": 128,
+          "deletions": 3,
+          "accepted_lines": 127
+        },
+        "training/tests/test_export.py": {
+          "additions": 42,
+          "deletions": 4,
+          "accepted_lines": 38
+        },
+        "index.html": {
+          "additions": 18,
+          "deletions": 4,
+          "accepted_lines": 14
+        },
+        "training/teacher/__init__.py": {
+          "accepted_lines": 3
+        },
+        "src/ai/policy-model.test.ts": {
+          "additions": 2,
+          "deletions": 2,
+          "accepted_lines": 31
+        },
+        "DESIGN.md": {
+          "additions": 13,
+          "deletions": 13,
+          "accepted_lines": 13
+        },
+        ".node-version": {
+          "additions": 1,
+          "accepted_lines": 1
+        },
+        "tsconfig.json": {
+          "additions": 8,
+          "deletions": 4,
+          "accepted_lines": 4
+        },
+        "src/ai/policy-model.ts": {
+          "accepted_lines": 74
+        },
+        "training/model/exporter.py": {
+          "additions": 63,
+          "deletions": 1,
+          "accepted_lines": 62
+        },
+        "vitest.config.ts": {
+          "additions": 11,
+          "accepted_lines": 11
+        },
+        "public/models/policy.manifest.json": {
+          "additions": 262,
+          "deletions": 101,
+          "accepted_lines": 163
+        },
+        "src/game/rules-contract.test.ts": {
+          "additions": 51,
+          "deletions": 4,
+          "accepted_lines": 47
+        },
+        "training/data/__init__.py": {
+          "additions": 8,
+          "accepted_lines": 8
+        },
+        "vite.config.ts": {
+          "additions": 7,
+          "accepted_lines": 7
+        }
+      }
+    }
+  }
+}
