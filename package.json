@@ -1,6 +1,28 @@
 {
   "name": "2048-ai",
   "version": "0.1.0",
+  "description": "A browser-only 2048 game with bilingual UI, PixiJS rendering, and local AI autoplay powered by a PyTorch-trained DAgger policy and ONNX Runtime Web.",
+  "author": "natumsol <natumsol@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Natumsol/2048-ai.git"
+  },
+  "homepage": "https://github.com/Natumsol/2048-ai#readme",
+  "bugs": {
+    "url": "https://github.com/Natumsol/2048-ai/issues"
+  },
+  "keywords": [
+    "2048",
+    "game",
+    "pixijs",
+    "pytorch",
+    "onnxruntime-web",
+    "dagger",
+    "imitation-learning",
+    "webgpu",
+    "wasm",
+    "bilingual"
+  ],
   "private": true,
   "type": "module",
   "packageManager": "npm@10.9.2",
