@@ -1,0 +1,87 @@
+src/i18n.ts
+  59556957e4d101cb 1-75
+index.html
+  59556957e4d101cb 2,7-10
+README.md
+  59556957e4d101cb 3,5,7-30,33,37,39,42-43,46-64,66,68,75-77,86-94,96-108,111-113,116-123,125
+src/app.module.css
+  59556957e4d101cb 76-98,596-601
+README.zh-CN.md
+  59556957e4d101cb 1-123
+tests/e2e/game.spec.ts
+  59556957e4d101cb 5-7,35-48
+src/main.ts
+  59556957e4d101cb 8,19-22,82-85,145-149,153-156,166-169,177-178,185-186,198-200,202,204-207,210-220
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8-ntes.9",
+  "base_commit_sha": "02002cfb962125290fc0b971af2f84222ec4b77b",
+  "prompts": {
+    "59556957e4d101cb": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0aa3a-84c6-7c51-9fb9-92d5d9c75463",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "natumsol",
+      "messages": [],
+      "total_additions": 2159,
+      "total_deletions": 145,
+      "accepted_lines": 2081,
+      "overriden_lines": 0,
+      "per_file_stats": {
+        "tests/e2e/game.spec.ts": {
+          "additions": 20,
+          "deletions": 1,
+          "accepted_lines": 19
+        },
+        "src/i18n.ts": {
+          "additions": 99,
+          "deletions": 24,
+          "accepted_lines": 75
+        },
+        "src/main.ts": {
+          "additions": 53,
+          "deletions": 18,
+          "accepted_lines": 47
+        },
+        "README.zh-CN.md": {
+          "additions": 143,
+          "deletions": 20,
+          "accepted_lines": 123
+        },
+        "README.md": {
+          "additions": 149,
+          "deletions": 79,
+          "accepted_lines": 123
+        },
+        "docs/images/2048-desktop-en.png": {
+          "additions": 559,
+          "accepted_lines": 559
+        },
+        "index.html": {
+          "additions": 6,
+          "deletions": 3,
+          "accepted_lines": 5
+        },
+        "docs/images/2048-mobile.png": {
+          "additions": 177,
+          "accepted_lines": 177
+        },
+        "docs/images/2048-desktop.png": {
+          "additions": 718,
+          "accepted_lines": 718
+        },
+        "docs/images/2048-mobile-en.png": {
+          "additions": 206,
+          "accepted_lines": 206
+        },
+        "src/app.module.css": {
+          "additions": 29,
+          "accepted_lines": 29
+        }
+      }
+    }
+  }
+}
