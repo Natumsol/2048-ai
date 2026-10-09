@@ -1,0 +1,171 @@
+training/scripts/benchmark.py
+  59556957e4d101cb 6-7,15,73-77,79-191,193-195
+training/tests/test_generate_data.py
+  59556957e4d101cb 18,23-24
+README.md
+  59556957e4d101cb 40-42,45,53
+training/scripts/dagger.py
+  59556957e4d101cb 1-318
+scripts/benchmark-model.ts
+  59556957e4d101cb 31,102
+public/models/policy.manifest.json
+  59556957e4d101cb 3-4,16,19,21-23,26-29,31-41,45-49,53-57,61-65,69-73,77-81,85-89,94-95,97,100-106
+training/teacher/expectimax.py
+  59556957e4d101cb 3-6,8,13,15-25,28-49,52-121,123-156,158-162,166-227,229-234,238-286,288-314,326,329-332
+training/tests/test_model.py
+  59556957e4d101cb 6,38-41
+package.json
+  59556957e4d101cb 27-30
+training/scripts/train.py
+  59556957e4d101cb 4,21-37,42-85,96-98,109-147,153-154,157-159,161-168,172-175,184-186,193-195,210-216,219,225,236-240,242,253-255,287,300-308,310-311,335-339
+training/scripts/generate_data.py
+  59556957e4d101cb 16,27,39,84,88,98,103,124,135,145,155,183,190-193,217-219,233,258
+training/scripts/pipeline.py
+  59556957e4d101cb 8,10,58-132,149-150,167,179-180,185,200-204
+training/tests/test_dagger.py
+  59556957e4d101cb 1-72
+training/scripts/dagger_pipeline.py
+  59556957e4d101cb 1-159
+training/tests/test_teacher.py
+  59556957e4d101cb 1-4,6,8-16,36-116
+training/configs/full.json
+  59556957e4d101cb 7,9-10,13-28
+training/model/policy.py
+  59556957e4d101cb 59-105
+training/scripts/ensemble.py
+  59556957e4d101cb 1-63
+training/scripts/polish.py
+  59556957e4d101cb 1-77
+training/teacher/native_expectimax.cpp
+  59556957e4d101cb 1-263
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8-ntes.9",
+  "base_commit_sha": "203724c0fc4cc8b4c75a9bdc62e049c67ccd6354",
+  "prompts": {
+    "59556957e4d101cb": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0aa3a-84c6-7c51-9fb9-92d5d9c75463",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "刘甲（彧瑾）",
+      "messages": [],
+      "total_additions": 2553,
+      "total_deletions": 906,
+      "accepted_lines": 1941,
+      "overriden_lines": 0,
+      "per_file_stats": {
+        "training/scripts/pipeline.py": {
+          "additions": 122,
+          "deletions": 49,
+          "accepted_lines": 89
+        },
+        "training/scripts/dagger.py": {
+          "additions": 332,
+          "deletions": 14,
+          "accepted_lines": 318
+        },
+        "test-results/.last-run.json": {
+          "accepted_lines": 4
+        },
+        "scripts/benchmark-model.ts": {
+          "additions": 2,
+          "accepted_lines": 2
+        },
+        "training/configs/full.json": {
+          "additions": 56,
+          "deletions": 41,
+          "accepted_lines": 27
+        },
+        "training/scripts/tune_teacher.py": {
+          "additions": 47,
+          "deletions": 4
+        },
+        "training/model/policy.py": {
+          "additions": 50,
+          "deletions": 3,
+          "accepted_lines": 47
+        },
+        "README.md": {
+          "additions": 5,
+          "deletions": 2,
+          "accepted_lines": 5
+        },
+        "tsconfig.node.json": {
+          "accepted_lines": 1
+        },
+        "training/scripts/benchmark.py": {
+          "additions": 149,
+          "deletions": 44,
+          "accepted_lines": 125
+        },
+        "training/teacher/native_expectimax.cpp": {
+          "additions": 278,
+          "deletions": 15,
+          "accepted_lines": 263
+        },
+        "training/tests/test_dagger.py": {
+          "additions": 72,
+          "accepted_lines": 72
+        },
+        "training/scripts/dagger_pipeline.py": {
+          "additions": 167,
+          "deletions": 8,
+          "accepted_lines": 159
+        },
+        "training/scripts/train.py": {
+          "additions": 178,
+          "deletions": 55,
+          "accepted_lines": 162
+        },
+        "training/teacher/expectimax.py": {
+          "additions": 708,
+          "deletions": 491,
+          "accepted_lines": 332
+        },
+        "training/tests/test_generate_data.py": {
+          "additions": 3,
+          "deletions": 1,
+          "accepted_lines": 3
+        },
+        "public/models/policy.manifest.json": {
+          "additions": 62,
+          "deletions": 114,
+          "accepted_lines": 62
+        },
+        "training/scripts/ensemble.py": {
+          "additions": 68,
+          "deletions": 5,
+          "accepted_lines": 63
+        },
+        "training/tests/test_model.py": {
+          "additions": 9,
+          "deletions": 1,
+          "accepted_lines": 9
+        },
+        "package.json": {
+          "additions": 6,
+          "deletions": 3,
+          "accepted_lines": 4
+        },
+        "training/tests/test_teacher.py": {
+          "additions": 123,
+          "deletions": 30,
+          "accepted_lines": 95
+        },
+        "training/scripts/polish.py": {
+          "additions": 86,
+          "deletions": 9,
+          "accepted_lines": 77
+        },
+        "training/scripts/generate_data.py": {
+          "additions": 30,
+          "deletions": 17,
+          "accepted_lines": 22
+        }
+      }
+    }
+  }
+}
